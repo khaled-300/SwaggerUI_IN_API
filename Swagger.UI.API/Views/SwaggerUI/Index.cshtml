@@ -1,0 +1,41 @@
+﻿@using Microsoft.Extensions.Options;
+@using Swagger.UI.TecUnica.Models;
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Apis Swagger";
+}
+@model Swagger.UI.TecUnica.Models.EndpointsConfiguration
+
+<div id="swagger-ui">
+
+</div>
+
+@section PageScripts {
+
+
+    <script type="text/javascript">
+        window.onload = function () {
+
+            // Build a system
+            const ui = SwaggerUIBundle({
+                urls:
+                @(Html.Raw(JsonConvert.SerializeObject(Model.ServiceEndpoints.Select(c=> new { url = c.Url.ToString(), name = c.Name }),Formatting.Indented))),
+                "urls.primaryName": "@(Model.ServiceEndpoints.SingleOrDefault(c=>c.Default)?.Name ?? Model.ServiceEndpoints.FirstOrDefault()?.Name)",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+            })
+
+            window.ui = ui
+        }
+    </script>
+
+
+}
